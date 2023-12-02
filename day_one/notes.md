@@ -9,7 +9,7 @@ I also like to make a test file ```test.txt``` with the example input they give 
 ###### Personal difficulty rating = 1
 
 ### Solution logic
-Day one's problem is not very difficult so there is not much to say. My method is to create a counter, put all integers into a list and add together ```list[0]*10 + list[-1]``` to find the final int to add to counter for each line, before printing counter's final number at the end of the file to get the answer.
+Day one's problem is straightforward so there is not much to say. My method is to create a counter, put all integers into a list and add together ```list[0]*10 + list[-1]``` to find the final int to add to counter for each line, before printing counter's final number at the end of the file to get the answer.
 
 ### Exceptions to logic
 Because each line is said to have a unique calibration number, we know that out list will always have a first and last element so our logic will never break.
