@@ -15,7 +15,7 @@ Last line of data must have a new line char at the end of it for this implementa
 ###### Personal difficulty rating = (TODO)
 
 ### Solution logic
-Part two of the problem is the same problem but on a much larger scale, forcing me to implement a more efficient approach.
+Upon reviewing how long operations take in python, comparing integers is not the reason the solution here is slow. This means that there must be some method to not run every single integer in the range we are given.
 
 ### Exceptions to logic
 (TODO)
