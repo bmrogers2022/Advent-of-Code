@@ -3,7 +3,7 @@ problem_file = "data.txt"
 tester_file = "test.txt"
 
 # put file lines into data
-with open(problem_file) as file:
+with open(tester_file) as file:
     data = file.readlines()
 
 # store min
@@ -25,7 +25,11 @@ while i < len(data):
         i -= 1 # sets data[i] to be "\n" for next iteration
     i += 1
 
-print(conversions)
+# to reverse engineer the mappings, reverse the list of conversions
+
+reversed_mappings = conversions[::-1]
+
+print(reversed_mappings)
 
 # make a function that finds location number of seeds
 def find_location(seed):
@@ -38,9 +42,9 @@ def find_location(seed):
 
     return seed
 
-for s in range(0, len(seeds), 2):
-    for s2 in range(int(seeds[s+1])):
-        minimum = min(find_location(int(seeds[s])+s2), minimum)
-    print(f"one done. min = {minimum}")
+# for s in range(0, len(seeds), 2):
+#     for s2 in range(int(seeds[s+1])):
+#         minimum = min(find_location(int(seeds[s])+s2), minimum)
+#     print(f"one done. min = {minimum}")
 
-print(minimum)
+# print(minimum)

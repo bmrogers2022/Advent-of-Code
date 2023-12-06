@@ -15,7 +15,9 @@ Last line of data must have a new line char at the end of it for this implementa
 ###### Personal difficulty rating = (TODO)
 
 ### Solution logic
-Upon reviewing how long operations take in python, comparing integers is not the reason the solution here is slow. This means that there must be some method to not run every single integer in the range we are given.
+Upon reviewing how long operations take in python, comparing integers is not the reason the solution here is slow. This means that there must be some method to not run every single integer in the range we are given.  
+New Method: reverse engineer the process, starting at humidity to location and going up to see what starting number is the closest to ending up there. Since we have 2 billion seed numbers, one is bound to be close to the lowest possible location.  
+Updated Method: after thinking about it, I figured that although reverse engineering the mappings may be possible but I wouldn't know how to deal with unmapped numbers. However, I came up with an idea to make one big map by going through the maps and combining all the intermediate mappings in order to make one seed-to-location map. Once I do that, I can essentially reverse engineer the process by checking the lowest location mapping in seed-to-location and go from there to find which one of our seeds maps the lowest.
 
 ### Exceptions to logic
 (TODO)
