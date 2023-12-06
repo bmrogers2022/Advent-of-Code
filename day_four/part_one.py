@@ -36,5 +36,5 @@ print(counter)
 
 """
 Tester correctly outputs 13
-Problem correctly outputs 
+Problem correctly outputs 32001
 """
