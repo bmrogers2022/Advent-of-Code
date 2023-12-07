@@ -26,5 +26,7 @@ After thinking about it, I figured that although reverse engineering the mapping
 ### Photo of concept:  
 ![image](mapping.png)
 
+###### While coding I realized my conversions by hand were incomplete/incorrect, but it still conveys the general idea
+
 ### Exceptions to logic
 (TODO)
