@@ -54,7 +54,7 @@ def combine_rules(instructions, map_2):
             new_instructions = []
             new_instructions.append(m2d) # same starting destination as m2
             new_instructions.append(m1s+(m2s-m1d)) # same source plus \ - |
-            new_instructions.append(m1m-m2s) # range of | - \
+            new_instructions.append(m1m-m2s+1) # range of | - \
             new_command = []
             new_command.append(m1d) # same starting destination as m1
             new_command.append(m1s) # same starting source as m1
@@ -81,7 +81,7 @@ def combine_rules(instructions, map_2):
             new_instructions.append(m1i) # same increment as m1
             return new_instructions
         # case 6: |\\|
-        elif m1d < m2s and m1m > m2m:
+        elif m1d <= m2s and m1m >= m2m:
             # we want to return new instructions for \\ and run again on |\ and \|
             new_instructions = []
             new_instructions.append(m2d) # same destination as m2
@@ -99,34 +99,60 @@ def combine_rules(instructions, map_2):
     # if instructions remain unchanged through all new rules, return same instructions
     return [m1d, m1s, m1i]
 
-# def add_rules(instructions, map_1, outputter):
-#     add = True
-#     for j in range(len(map_1)):
-#         lower_bound = int(map_1[j][1])
-#         range_len = int(map_1[j][2])
-#         upper_bound = lower_bound + range_len
-#         our_lower = int(instructions[1])
-#         our_upper = our_lower + int(instructions[2])
-#         # find corresponding bounds
-#         if lower_bound <= our_lower <= upper_bound:
-#             add = False
-#             if lower_bound <= our_upper <= upper_bound:
-#                 break
-#             for i in add_rules([instructions[0], upper_bound, our_upper-upper_bound], map_1, outputter):
-#                 outputter.append(i)
-#         elif lower_bound <= our_upper <= upper_bound:
-#             add = False
-#             for i in add_rules([instructions[0], our_lower, lower_bound], map_1, outputter):
-#                 outputter.append(i)
-#         elif lower_bound > our_lower and upper_bound < our_upper:
-#             add = False
-#             for i in add_rules([instructions[0], upper_bound, our_upper-upper_bound], map_1, outputter):
-#                 outputter.append(i)
-#             for i in add_rules([instructions[0], our_lower, lower_bound], map_1, outputter):
-#                 outputter.append(i)
-#     if add:
-#         outputter.append(instructions)
-#     return outputter
+# we will feed this function rules after running combine_rules
+def add_rules(instructions, map_1):
+    for i in range(len(map_1)):
+        # set variables
+        m2d = int(instructions[0])
+        m2s = int(instructions[1])
+        m2i = int(instructions[2])
+        m2m = m2s + m2i - 1
+        if m2i == 0:
+            return []
+        m1d = int(map_1[i][0])
+        m1s = int(map_1[i][1])
+        m1i = int(map_1[i][2])
+        m1m = m1s + m1i - 1
+        # | = m1, \ = m2
+        # case 1: ||\\
+        if m2s > m1m:
+            continue
+        # case 2: \\||
+        elif m2m < m1s:
+            continue
+        # case 3: |\|\
+        elif m1s <= m2s and m2s <= m1m <= m2m:
+            # we want to try again with a smaller range
+            new_instructions = []
+            new_instructions.append(m2d+(m1m-m2s)+1) # destination of m2 + | - \
+            new_instructions.append(m1m+1) # start where m1m ends
+            new_instructions.append(m2m-m1m) # range of \ - |
+            return add_rules(new_instructions, map_1)
+        # case 4: \|\|
+        elif m2s <= m1s and m1s <= m2m <= m1m:
+            # we want to try again with a smaller range
+            new_instructions = []
+            new_instructions.append(m2d) # same destination as m2
+            new_instructions.append(m2s) # same start as m2
+            new_instructions.append(m1s-m2s) # range of | - \
+            return add_rules(new_instructions, map_1)
+        # case 5: \||\
+        elif m2s <= m1s and m2m >= m1m:
+            # we want to try again with two smaller ranges
+            new_instructions = []
+            new_instructions.append(m2d) # same destination as m2
+            new_instructions.append(m2s) # same start as m2
+            new_instructions.append(m2i-(m1s-m2s)) # range of | - \
+            second_instructions = []
+            second_instructions.append(m2d+(m1m-m2s)+1) # same destination as m2 + | - \
+            second_instructions.append(m1m+1) # start where m1 ends
+            second_instructions.append(m2m-m1m) # range of \ - |
+            return add_rules(new_instructions, map_1) + add_rules(second_instructions, map_1)
+        # case 6: |\\|
+        elif m1s <= m2s and m1m >= m2m:
+            # if fully engulfed, fail and return []
+            return []
+    return [m2d, m2s, m2i]
 
 """
 Our entire current objective is to create a function that combines two 
@@ -137,12 +163,21 @@ def combine_maps(map_1, map_2):
     # go through each source category in map_1, change to corresponding map_2 value
     for i in range(len(map_1)):
         rule = []
-        all_rules = combine_rules(map_1[i], map_2)
-        for i in range(len(all_rules)):
-            rule.append(all_rules[i])
-            if (i + 1) % 3 == 0:
+        combined_rules = combine_rules(map_1[i], map_2)
+        for j in range(len(combined_rules)):
+            rule.append(combined_rules[j])
+            if (j + 1) % 3 == 0:
                 combined_instructions.append(rule)
                 rule = []
+    for i in range(len(map_2)):
+        rule = []
+        added_rules = add_rules(map_2[i], combined_instructions)
+        for j in range(len(added_rules)):
+            rule.append(added_rules[j])
+            if (j + 1) % 3 == 0:
+                combined_instructions.append(rule)
+                rule = []
+        
     
     # check bounds in map_2 that aren't in map_1
     # for j in range(len(map_2)):
