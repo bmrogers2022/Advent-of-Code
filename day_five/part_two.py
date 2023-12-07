@@ -3,7 +3,7 @@ problem_file = "data.txt"
 tester_file = "test.txt"
 
 # put file lines into data
-with open(tester_file) as file:
+with open(problem_file) as file:
     data = file.readlines()
 
 # store min
@@ -177,13 +177,6 @@ def combine_maps(map_1, map_2):
             if (j + 1) % 3 == 0:
                 combined_instructions.append(rule)
                 rule = []
-        
-    
-    # check bounds in map_2 that aren't in map_1
-    # for j in range(len(map_2)):
-    #     for rule in add_rules(map_2[j], map_1, []):
-    #         combined_instructions.append(rule)
-
     return combined_instructions
 
 # make a function that finds location number of seeds
@@ -191,16 +184,35 @@ def find_location(seed):
 
     for i in conversions:
         for j in i:
-            if int(j[1]) <= seed <= (int(j[1])+int(j[2])): # inbounds(seed) if this is too inefficient
+            if int(j[1]) <= seed <= (int(j[1])+int(j[2])):
                 seed = int(j[0]) + (seed-int(j[1]))
                 break
 
     return seed
 
-# for s in range(0, len(seeds), 2):
-#     for s2 in range(int(seeds[s+1])):
-#         minimum = min(find_location(int(seeds[s])+s2), minimum)
-#     print(f"one done. min = {minimum}")
-print(conversions[0], conversions[1])
-print(combine_maps(conversions[0], conversions[1]))
+seed_to_location = conversions[0]
+
+for i in conversions[1:]:
+    seed_to_location = combine_maps(seed_to_location, i)
+
+sorted_maps = sorted(seed_to_location, key= lambda x: x[0])
+
+# edit seed ranges
+seed_ranges = []
+for i in range(0, len(seeds), 2):
+    seed_ranges.append((int(seeds[i]), int(seeds[i+1])))
+
+for map in sorted_maps:
+    for seed in seed_ranges:
+        print(map, seed)
+        overlap = range(max(seed[0], map[1]), min(seed[0]+seed[1], map[1]+map[2]+1))
+        if len(overlap) != 0:
+            temp_min = map[0]+(overlap[0]-map[1])
+            minimum = min(minimum, temp_min)
+
 print(minimum)
+
+"""
+Tester correctly outputs 46
+Problem correctly outputs 47909639
+"""
