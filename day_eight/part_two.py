@@ -34,8 +34,10 @@ for point in points:
         count += 1
     first_z.append((point, count))
 
+# error in previous solution: logic works, but only for this example
 for point in first_z:
-    count = 0
+    count = point[1] # must keep same point as last time, not reset
+    temp = count
     loc = point[0]
     # first step necessary to initiate for loop
     loc = network[loc][directions[r_l[count % len(r_l)]]]
@@ -43,7 +45,7 @@ for point in first_z:
     while loc != point[0]:
         loc = network[loc][directions[r_l[count % len(r_l)]]]
         count += 1
-    loop_z.append((loc, count))
+    loop_z.append((loc, count-temp))
 
 # printing both results
 print(first_z)
