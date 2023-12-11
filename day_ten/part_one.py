@@ -1,0 +1,57 @@
+# variables to make changing between testing and running easy
+problem_file = "data.txt"
+tester_file = "test.txt"
+
+# put file lines into data
+with open(tester_file) as file:
+    data = [x.strip() for x in file.readlines()] # removes \n
+
+# imagine 2d array as a grid, these are the directions
+d = {"N": (-1, 0), "S": (1, 0), "E": (0, 1), "W": (0, -1)}
+pipes = {"|": (d["N"], d["S"]), "-": (d["E"], d["W"]), "L": (d["N"], d["E"]),
+         "J": (d["N"], ["W"]), "7": (d["S"], d["W"]), "F": (d["S"], d["E"])}
+max_x = len(data[0]) - 1
+max_y = len(data) - 1
+visited = set() # don't double count
+queue = []
+
+# check for index error
+def is_legal(pt):
+    return 0 <= pt[0] <= max_x and 0 <= pt[1] <= max_y
+
+# find start point
+def find_s(map):
+    for i in range(len(map)):
+        for j in range(len(map)):
+            if map[i][j] == "S":
+                return [i, j]
+
+# input 2 lists of coords and a pipe, return next direction or False     
+def in_pipe(x, y):
+    pipe = data[y[0]][y[1]]
+    print(pipe)
+    for i in pipes[pipe]:
+        if [y[0] + i[0], y[1] + i[1]] == x:
+            for j in pipes[pipe]:
+                if j != i:
+                    return j # the other direction
+    return False
+
+print(data)
+
+# Start traversing array
+l = find_s(data) # location
+symbol = data[l[0]][l[1]]
+
+print(symbol)
+
+print(in_pipe([1,1], [2,1]))
+
+# hard part is starting, after that it just follows a simple direction
+for i in d.values():
+    new_pipe = [l[0]+i[0], l[1]+i[1]]
+    adjacent = in_pipe(l, new_pipe)
+    if adjacent:
+        queue.append([new_pipe, adjacent, 0])
+
+print(queue)
